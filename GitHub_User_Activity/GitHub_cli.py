@@ -6,14 +6,17 @@ from datetime import datetime
 from datetime import timezone
 from zoneinfo import ZoneInfo
 
+#Recives user inpui
 def userInput() -> str:
     user_name = sys.argv[1]
     return user_name
 
+#Builds the github url
 def buildURL(user_name) -> str:
     url = f"https://api.github.com/users/{user_name}/events"
     return url
 
+#Gets recent events and handles errors
 def fetchData(url) -> dict:
     try:
         response = request.urlopen(url)
@@ -32,6 +35,7 @@ def fetchData(url) -> dict:
         print("Error: Failed to connect to GitHub")
         return None
 
+#Formats time to adelaide time
 def formatTime(raw_time) -> str:
     dt = datetime.strptime(raw_time, "%Y-%m-%dT%H:%M:%SZ")
     dt = dt.replace(tzinfo=timezone.utc)
@@ -39,6 +43,7 @@ def formatTime(raw_time) -> str:
     time = sa_time.strftime("%d %b %Y, %I:%M %p")
     return time
 
+#Handles events and outputs event history
 def outputData(events):
     for event in events[:5]:
         repo = event['repo']['name']
